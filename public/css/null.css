@@ -32,6 +32,10 @@
 }
 
 .message-other .chat-item-text .message-nick {
+    color: orange;
+}
+
+.message-system .chat-item-text .message-nick {
     color: red;
 }
 

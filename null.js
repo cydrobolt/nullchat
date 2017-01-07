@@ -32,13 +32,15 @@ app.get('/', (req, res) => {
 })
 
 app.get('/new_chat/', (req, res) => {
-    var chatKey = crypto.randomBytes(16).toString('hex');
+    var chatKey = crypto.randomBytes(16).toString('hex')
     res.redirect('/chat/' + chatKey)
 })
 
 app.get('/chat/:roomId', (req, res) => {
     var roomId = req.params.roomId
-    rooms[roomId] = []
+    if (!(roomId in rooms)) {
+        rooms[roomId] = []
+    }
 
     res.render('null.html', { roomId: roomId })
 })
@@ -51,7 +53,7 @@ io.on('connection', (sk) => {
     let currentUser = {
         id: sk.id,
         nick: generatedNick,
-        pubKey: null
+        pubkey: null
     }
 
     // emit nick to client
@@ -63,21 +65,55 @@ io.on('connection', (sk) => {
     })
 
     sk.on('joinRoom', (roomId) => {
+        if (!(roomId in rooms) || (rooms[roomId] === undefined)) {
+            sk.emit('warn', 'Room does not exist.')
+            sk.disconnect()
+            return false
+        }
+
         if (rooms[roomId].length >= 2) {
             // room is full; two users maximum
+            sk.emit('full', 'Room is full.')
             sk.disconnect()
+            return false
         }
+
+        // join room
+        sk.join(roomId)
+
+        if (rooms[roomId].length == 1) {
+            // there is already a user in the room
+            // perform public key exchange
+            var existingUser = rooms[roomId][0]
+            var existingUserPubkey = existingUser.pubkey
+
+            // send existing user's pubkey to the new user
+            sk.emit('recv_pubkey', existingUserPubkey)
+            // send new user's pubkey to the existing user
+            sk.broadcast.to(existingUser.id).emit('recv_pubkey', currentUser.pubkey)
+        }
+
         // save user to current users
         users[sk.id] = currentUser
         // add user to roomId
-        rooms[roomId].push(sk.id)
+        rooms[roomId].push(currentUser)
+
+        sk.on('relayMsg', (msg) => {
+            // relay encrypted message to room
+            var nick = users[sk.id].nick
+            sk.to(roomId).emit('newMessage', nick, msg)
+        })
     })
 
     sk.on('disconnect', () => {
         delete users[sk.id]
     })
 
-
+    sk.on('get_users', (roomId) => {
+        for (let user in rooms[roomId]) {
+            sk.emit('warn', rooms[roomId][user].nick + ' joined the room.')
+        }
+    })
 })
 
 export { server }
