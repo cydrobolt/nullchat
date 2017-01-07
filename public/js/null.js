@@ -166,13 +166,23 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         $scope.sk.on('full', function (err) {
             // if room is full
             $scope.state.loadingMsg = err
-            $scope.state.roomFull = true
+            $scope.state.loadingErr = true
 
             $scope.$apply()
         })
 
         $scope.sk.on('disconnect', function () {
             $scope.appendMessage('System', 'Disconnected.')
+            if (!$scope.state.loadingErr) {
+                // apply generic loading error
+                // only if a more specific error has not already been applied
+                $scope.state.loaded = false
+                $scope.state.loadingMsg = 'disconnected from the server'
+                $scope.state.loadingErr = true
+                $scope.$apply()
+                // don't reconnect
+                $scope.sk.disconnect()
+            }
         })
 
         /* chat controls */
