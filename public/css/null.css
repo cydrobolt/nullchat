@@ -1,0 +1,51 @@
+/* preloader */
+/* TODO add fonts for fontawesome */
+.preloader {
+    text-align: center;
+}
+
+.preloader-icon {
+    font-size: 5em;
+}
+
+.preloader p {
+    font-size: 2em;
+}
+
+/* chat elements */
+.chat-history {
+    height: 60vh;
+    overflow-y: auto;
+}
+
+.chat-history table {
+    color: #888888;
+}
+
+.chat-item-time {
+    width: 7em;
+}
+
+/* message elements */
+.message-self .chat-item-text .message-nick {
+    color: green;
+}
+
+.message-other .chat-item-text .message-nick {
+    color: red;
+}
+
+.chat-item-text {
+    word-wrap: normal;
+    word-break: break-all;
+}
+
+/* other */
+h2.title {
+    font-family: "Ubuntu Mono", monospace;
+}
+
+h2.title a {
+    text-decoration: none;
+    color: inherit;
+}

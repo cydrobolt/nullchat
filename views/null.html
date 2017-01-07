@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/null.css">
+{% endblock %}
+
+{% block content %}
+<div ng-controller="NullCtrl">
+    <div class="row chat-interface" ng-cloak ng-show="state.loaded">
+        <h2 class="title">
+            <a href="/">
+                nullchat
+            </a>
+        </h2>
+        <div class="chat-history">
+            <div class="chat-item">
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td class="chat-item-time">00:00:00</td>
+                            <td class="chat-item-text">Loaded.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chat-field">
+            <input class="form-control chat-input" autocomplete="off" placeholder="send a message..." type="text">
+        </div>
+    </div>
+
+    <div class="preloader" ng-if="!state.loaded">
+        <h2 class="title">nullchat</h2>
+        <p ng-bind="state.loadingMsg">loading nullchat...</p>
+        <i class="fa fa-spin fa-gear preloader-icon"></i>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    let roomId = '{{ roomId }}'
+</script>
+<script src="/static/js/vendor/openpgp.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/null.js"></script>
+{% endblock %}
