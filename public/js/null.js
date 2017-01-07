@@ -67,7 +67,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
 
         var options = {
             userIds: [{ name:'nullchat', email:'nullchat@cydrobolt.com' }],
-            numBits: 4096 // RSA key size
+            numBits: 3072 // RSA key size
         }
 
         openpgp.generateKey(options).then(function(key) {

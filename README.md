@@ -2,7 +2,7 @@
 --------------------
 _Ad-hoc secure messaging for all._
 
-nullchat is an ad-hoc secure messaging app that allows two users to share a link in order to open a secure 
+nullchat is an ad-hoc secure messaging app that allows two users to share a link in order to open a secure
 PGP end-to-end encrypted messaging tunnel.
 
 ### Getting Started
@@ -12,7 +12,7 @@ uses no database.
  - `nodemon` or `node _entrypoint.js`
 
 ## Implementation
-The nullchat does not have any knowledge of the messages sent between users. It does not have access to the private
+The nullchat server does not have any knowledge of the messages sent between users. It does not have access to the private
 keys and merely relays the information from end to end. nullchat uses PGP to secure communications between the users.
 
 To increase privacy, it is recommended to use HTTPS and HSTS on your server. If an attacker can modify the JavaScript sent to the client, there can be no expectation of privacy.
