@@ -1,0 +1,4 @@
+{
+    "watch": ["views/", "lib/", "null.js"],
+    "ext": "html js"
+}
