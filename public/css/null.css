@@ -47,6 +47,12 @@
 /* other */
 h2.title {
     font-family: "Ubuntu Mono", monospace;
+    display: inline-block;
+}
+
+.about {
+    margin-bottom: 1.5em;
+    margin-left: 2em;
 }
 
 h2.title a {

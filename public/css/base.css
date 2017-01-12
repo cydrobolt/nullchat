@@ -4,6 +4,9 @@ body {
     font-family: "Ubuntu Mono", monospace;
 }
 
-.container {
-    margin-top: 5em;
+@media only screen and (min-width: 767px) {
+    /* mobile devices */
+    .container {
+        margin-top: 5em;
+    }
 }

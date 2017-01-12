@@ -12,6 +12,8 @@
                 nullchat
             </a>
         </h2>
+        <a class="btn btn-danger about" href="//github.com/cydrobolt/nullchat">about</a>
+
         <div class="chat-history">
             <div class="chat-item">
                 <table class="table table-hover">
@@ -25,12 +27,16 @@
             </div>
         </div>
         <div class="chat-field">
-            <input class="form-control chat-input" ng-disabled="!state.loaded" autocomplete="off" placeholder="send a message..." type="text">
+            <input class="form-control chat-input" ng-disabled="state.blockInput" autocomplete="off" placeholder="send a message..." type="text">
         </div>
     </div>
 
     <div class="preloader" ng-if="!state.loaded">
-        <h2 class="title">nullchat</h2>
+        <h2 class="title">
+            <a href="/">
+                nullchat
+            </a>
+        </h2>
         <p ng-bind="state.loadingMsg">loading nullchat...</p>
         <i ng-if="!state.loadingErr" class="fa fa-spin fa-gear preloader-icon"></i>
         <i ng-if="state.loadingErr" class="fa fa-ban preloader-icon"></i>
