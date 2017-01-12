@@ -1,7 +1,6 @@
 import express from 'express'
 import http from 'http'
 import bodyParser from 'body-parser'
-import config from './config.json'
 import SocketIO from 'socket.io'
 import crypto from 'crypto'
 import nunjucks from 'nunjucks'

@@ -1,8 +1,8 @@
 import { server } from './null'
-import config from './config.json'
 
-let port = config.port || 5000
+let port = process.env.PORT || 5000
+let host = process.env.HOST || '127.0.0.1'
 
-server.listen(port, () => {
+server.listen(port, host, () => {
     console.log('running null')
 })
