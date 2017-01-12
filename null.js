@@ -52,7 +52,8 @@ io.on('connection', (sk) => {
     let currentUser = {
         id: sk.id,
         nick: generatedNick,
-        pubkey: null
+        pubkey: null,
+        room: null
     }
 
     // emit nick to client
@@ -79,6 +80,7 @@ io.on('connection', (sk) => {
 
         // join room
         sk.join(roomId)
+        currentUser.room = roomId
 
         if (rooms[roomId].length == 1) {
             // there is already a user in the room
@@ -105,6 +107,19 @@ io.on('connection', (sk) => {
     })
 
     sk.on('disconnect', () => {
+        // if the user disconnects, destroy their room
+        // and warn any other users of the room that a user has disconnected
+        if (!(sk.id in users) || users[sk.id] === undefined) {
+            return
+        }
+
+        let roomId = users[sk.id].room
+        let nick = users[sk.id].nick
+
+        sk.to(roomId).emit('warn', nick + ' has disconnected. This room has been closed.')
+        sk.to(roomId).emit('roomClosed')
+
+        delete rooms[roomId]
         delete users[sk.id]
     })
 

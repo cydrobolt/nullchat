@@ -21,7 +21,8 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         loaded: false,
         loadingMsg: 'generating encryption keys',
         roomId: roomId,
-        targetJoined: false
+        targetJoined: false,
+        blockInput: false
     }
 
     $scope.sk = null
@@ -131,7 +132,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
             $scope.sk.emit('pubkey', $scope.keys.pubkey)
             $scope.sk.emit('joinRoom', $scope.state.roomId)
 
-            $scope.state.loadingMsg = 'awaiting target key exchange'
+            $scope.state.loadingMsg = 'awaiting target'
             $scope.$apply()
         })
 
@@ -169,6 +170,12 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
             $scope.state.loadingMsg = err
             $scope.state.loadingErr = true
 
+            $scope.$apply()
+        })
+
+        $scope.sk.on('roomClosed', function (err) {
+            // if room has been closed
+            $scope.state.blockInput = true
             $scope.$apply()
         })
 
