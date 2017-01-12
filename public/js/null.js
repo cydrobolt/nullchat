@@ -1,6 +1,7 @@
 /* global nullapp, io, openpgp, roomId */
 
 const ENTER_KEY = 13
+const RSA_KEY_SIZE = 2048
 
 nullapp.directive('chatItem', function() {
     return {
@@ -67,7 +68,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
 
         var options = {
             userIds: [{ name:'nullchat', email:'nullchat@cydrobolt.com' }],
-            numBits: 3072 // RSA key size
+            numBits: RSA_KEY_SIZE // RSA key size
         }
 
         openpgp.generateKey(options).then(function(key) {
