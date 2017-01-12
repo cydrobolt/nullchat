@@ -1,4 +1,4 @@
-/* global nullapp, io, openpgp, roomId */
+/* global nullapp, io, sjcl, openpgp, roomId, _generateRandomKey */
 
 const ENTER_KEY = 13
 const RSA_KEY_SIZE = 2048
@@ -20,6 +20,8 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         nick: null,
         loaded: false,
         loadingMsg: 'generating encryption keys',
+        loadingErr: false,
+        errDetail: '',
         roomId: roomId,
         targetJoined: false,
         blockInput: false
@@ -32,6 +34,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         pubkey: null, // own public key for encryption
         targetPubkey: null // public key of target user
     }
+    $scope.exchangeKey = window.location.hash.substr(1)
 
     $scope.isScrolledToBottom = function (el) {
         return el.scrollHeight - el.clientHeight <= el.scrollTop + 1
@@ -139,10 +142,70 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         $scope.sk.on('recv_pubkey', function (targetPubkey) {
             $scope.keys.targetPubkey = targetPubkey
 
-            // wait for pubkey to be exchanged with target
-            // before removing preloader
-            $scope.state.loaded = true
+            $scope.state.loadingMsg = 'verifying key exchange'
             $scope.$apply()
+
+            // verify integrity of key exchange
+            var nonce = _generateRandomKey()
+            // hash the exchange key with the nonce
+            console.log(sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash($scope.exchangeKey + nonce)))
+
+            $scope.encryptForTarget(
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash($scope.exchangeKey + nonce)
+                )
+            ).then(function (hashedExchangeKey) {
+                // pass to the server the hashed key with the nonce used
+                $scope.sk.emit('sendExchangeKey', hashedExchangeKey, nonce)
+            })
+
+            $scope.sk.on('validateExchange', function(nick, encRecvExchangeKey, recvNonce) {
+                if (nick == $scope.state.nick) {
+                    return
+                }
+
+                if (recvNonce.length < 5 || recvNonce == nonce) {
+                    // fail the key exchange if the received nonce is the same
+                    // as the sent nonce or if the nonce is too short
+                    $scope.state.loadingMsg = 'could not verify key exchange'
+                    $scope.state.errDetail = 'the server may be compromised or your link is incorrect'
+                    $scope.state.loadingErr = true
+
+                    $scope.sk.disconnect()
+                    $scope.$apply()
+                    return false
+                }
+
+                var expectedRecvExchangeKey = sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash($scope.exchangeKey + recvNonce)
+                )
+
+                console.log(encRecvExchangeKey)
+
+                $scope.decryptForSelf(encRecvExchangeKey)
+                    .then(function (recvExchangeKey) {
+                        console.log('expected', expectedRecvExchangeKey)
+                        console.log('actual', recvExchangeKey)
+
+                        if (expectedRecvExchangeKey == recvExchangeKey.data) {
+                            // key exchange is verified
+                            $scope.state.loaded = true
+
+                            $scope.$apply()
+                        }
+                        else {
+                            // key exchange is invalid
+                            // TODO abort
+                            $scope.state.loadingMsg = 'could not verify key exchange'
+                            $scope.state.errDetail = 'the server may be compromised or your link is incorrect'
+                            $scope.state.loadingErr = true
+                            $scope.$apply()
+
+                            $scope.sk.disconnect()
+                            return false
+                        }
+                    })
+            })
 
             // request a list of users
             $scope.sk.emit('get_users', $scope.state.roomId)
@@ -215,6 +278,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
     $scope.init = function () {
         console.log('initializing openpgp')
         openpgp.initWorker({ path: '/static/js/vendor/openpgp.worker.min.js' })
+        sjcl.random.startCollectors()
 
         // generate pgp keypair
         var generateKeyDefer = $scope.generateKeys()

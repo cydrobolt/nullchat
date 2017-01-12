@@ -104,6 +104,10 @@ io.on('connection', (sk) => {
             var nick = users[sk.id].nick
             sk.to(roomId).emit('newMessage', nick, msg)
         })
+
+        sk.on('sendExchangeKey', (key, nonce) => {
+            sk.to(roomId).emit('validateExchange', currentUser.nick, key, nonce)
+        })
     })
 
     sk.on('disconnect', () => {

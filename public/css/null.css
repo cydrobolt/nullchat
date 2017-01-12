@@ -12,6 +12,11 @@
     font-size: 2em;
 }
 
+.err-detail {
+    display: block;
+    margin-bottom: 1em;
+}
+
 /* chat elements */
 .chat-history {
     height: 60vh;

@@ -11,11 +11,14 @@
             <h2 class="title">nullchat</h2>
             <a ng-click="createRoom()" href="#" class="btn btn-success create-room">create a room</a>
             <a target="_blank" href="//github.com/cydrobolt/null" class="btn btn-danger">about</a>
+
+            <div class="alerts"></div>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
+<script src="/static/js/vendor/sjcl.min.js"></script>
 <script src="/static/js/index.js"></script>
 {% endblock %}

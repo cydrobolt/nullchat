@@ -38,6 +38,8 @@
             </a>
         </h2>
         <p ng-bind="state.loadingMsg">loading nullchat...</p>
+        <span class="err-detail" ng-bind="state.errDetail"></span>
+
         <i ng-if="!state.loadingErr" class="fa fa-spin fa-gear preloader-icon"></i>
         <i ng-if="state.loadingErr" class="fa fa-ban preloader-icon"></i>
     </div>
@@ -49,6 +51,7 @@
     let roomId = '{{ roomId }}'
 </script>
 <script src="/static/js/vendor/openpgp.min.js"></script>
+<script src="/static/js/vendor/sjcl.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/static/js/null.js"></script>
 {% endblock %}
