@@ -50,7 +50,8 @@
 
 {% block js %}
 <script>
-    let roomId = '{{ roomId }}'
+    const ROOM_ID = '{{ roomId }}'
+    const RSA_KEY_SIZE = {{ rsaKeySize }} || 2048
 </script>
 <script src="/static/js/vendor/openpgp.min.js"></script>
 <script src="/static/js/vendor/sjcl.min.js"></script>

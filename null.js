@@ -37,11 +37,13 @@ app.get('/new_chat/', (req, res) => {
 
 app.get('/chat/:roomId', (req, res) => {
     var roomId = req.params.roomId
+    var rsaKeySize = process.env.RSA_KEY_SIZE || 2048
+
     if (!(roomId in rooms)) {
         rooms[roomId] = []
     }
 
-    res.render('null.html', { roomId: roomId })
+    res.render('null.html', { roomId: roomId, rsaKeySize: rsaKeySize })
 })
 
 

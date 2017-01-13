@@ -1,7 +1,6 @@
-/* global nullapp, io, sjcl, openpgp, roomId, _generateRandomKey */
+/* global nullapp, io, sjcl, openpgp, ROOM_ID, _generateRandomKey */
 
 const ENTER_KEY = 13
-const RSA_KEY_SIZE = 2048
 
 nullapp.directive('chatItem', function() {
     return {
@@ -22,7 +21,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         loadingMsg: 'generating encryption keys',
         loadingErr: false,
         errDetail: '',
-        roomId: roomId,
+        roomId: ROOM_ID,
         targetJoined: false,
         blockInput: false
     }
@@ -135,13 +134,19 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
             $scope.sk.emit('pubkey', $scope.keys.pubkey)
             $scope.sk.emit('joinRoom', $scope.state.roomId)
 
-            $scope.state.loadingMsg = 'awaiting target'
+            $scope.state.loadingMsg = 'waiting for target to join'
+            $scope.state.errDetail = 'share this link to invite target to room'
             $scope.$apply()
         })
 
         $scope.sk.on('recv_pubkey', function (targetPubkey) {
-            $scope.keys.targetPubkey = targetPubkey
+            if ($scope.keys.targetPubkey) {
+                // if a key has already been saved, refuse to accept a new key
+                return false
+            }
 
+            $scope.keys.targetPubkey = targetPubkey
+            $scope.state.errDetail = ''
             $scope.state.loadingMsg = 'verifying key exchange'
             $scope.$apply()
 
@@ -249,6 +254,7 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
                 // only if a more specific error has not already been applied
                 $scope.state.loaded = false
                 $scope.state.loadingMsg = 'disconnected from the server'
+                $scope.state.errDetail = ''
                 $scope.state.loadingErr = true
                 $scope.$apply()
                 // don't reconnect
