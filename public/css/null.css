@@ -64,3 +64,10 @@ h2.title a {
     text-decoration: none;
     color: inherit;
 }
+
+@media only screen and (max-width: 767px) {
+    /* mobile devices */
+    .chat-history {
+        height: 75vh;
+    }
+}

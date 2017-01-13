@@ -5,7 +5,7 @@ body {
 }
 
 @media only screen and (min-width: 767px) {
-    /* mobile devices */
+    /* desktop */
     .container {
         margin-top: 5em;
     }

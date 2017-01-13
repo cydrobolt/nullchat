@@ -7,12 +7,14 @@
 {% block content %}
 <div ng-controller="NullCtrl">
     <div class="row chat-interface" ng-cloak ng-show="state.loaded">
-        <h2 class="title">
-            <a href="/">
-                nullchat
-            </a>
-        </h2>
-        <a class="btn btn-danger about" href="//github.com/cydrobolt/nullchat">about</a>
+        <div class="header-block">
+            <h2 class="title">
+                <a href="/">
+                    nullchat
+                </a>
+            </h2>
+            <a class="btn btn-danger about" href="//github.com/cydrobolt/nullchat">about</a>
+        </div>
 
         <div class="chat-history">
             <div class="chat-item">
