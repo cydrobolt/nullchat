@@ -11,13 +11,16 @@ uses no database.
  - `yarn` or `npm install`
  - `nodemon` or `node _entrypoint.js`
 
-## Implementation
+### Implementation
 The nullchat server does not have any knowledge of the messages sent between users. It does not have access to the private
 keys and merely relays the information from end to end. nullchat uses PGP to secure communications between the users.
 
 To increase privacy, it is recommended to use HTTPS and HSTS on your server. If an attacker can modify the JavaScript sent to the client, there can be no expectation of privacy.
 
-## Disclaimer
+### Using nullchat
+To use nullchat, click "create a room" to create a new room for two users. Share the generated link to another user in order to connect to them through nullchat. Ensure the link is copied in its entirety. Keep in mind anyone with the link (before a session is initiated) can listen to the messages sent in the room.
+
+### Disclaimer
 nullchat is a *toy* and has not gone through an indepndent security audit. You should not send sensitive information through nullchat, and the creators of nullchat hold no liability for any damages. 
 
 ```
