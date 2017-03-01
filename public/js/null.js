@@ -1,4 +1,5 @@
-/* global nullapp, io, sjcl, openpgp, ROOM_ID, _generateRandomKey */
+/* global nullapp, io, sjcl, openpgp,
+    ROOM_ID, _generateRandomKey, ifvisible, RSA_KEY_SIZE */
 
 const ENTER_KEY = 13
 
@@ -23,7 +24,8 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
         errDetail: '',
         roomId: ROOM_ID,
         targetJoined: false,
-        blockInput: false
+        blockInput: false,
+        unreadMsg: 0
     }
 
     $scope.sk = null
@@ -225,6 +227,13 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
 
             var decryptMessageDeferred = $scope.decryptForSelf(encryptedMessage)
             decryptMessageDeferred.then(function (plaintextMessage) {
+                console.log(ifvisible.now())
+                if (!ifvisible.now()) {
+                    // if screen is not in focus
+                    $scope.state.unreadMsg += 1
+                    $scope.$digest()
+                }
+
                 $scope.appendMessage(nick, plaintextMessage.data)
             })
         })
@@ -293,6 +302,25 @@ nullapp.controller('NullCtrl', function($scope, $compile, $q) {
             $scope.state.loadingMsg = 'connecting to server'
             $scope.connect()
         })
+
+        $scope.$watch('state.unreadMsg', function (nv, ov) {
+            if ($scope.state.unreadMsg > 0) {
+                // new unread message
+                document.title = '(' + $scope.state.unreadMsg + ') null'
+            }
+            else {
+                // unread messages cleared
+                document.title = 'null'
+            }
+        }, true)
+
+
+        ifvisible.on('focus', function() {
+            $scope.state.unreadMsg = 0
+            $scope.$digest()
+        })
+
+        ifvisible.now()
     }
 
     $scope.init()
