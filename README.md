@@ -21,7 +21,7 @@ To increase privacy, it is recommended to use HTTPS and HSTS on your server. If 
 To use nullchat, click "create a room" to create a new room for two users. Share the generated link to another user in order to connect to them through nullchat. Ensure the link is copied in its entirety. Keep in mind anyone with the link (before a session is initiated) can listen to the messages sent in the room.
 
 ### Disclaimer
-nullchat is a *toy* and has not gone through an indepndent security audit. You should not send sensitive information through nullchat, and the creators of nullchat hold no liability for any damages. 
+nullchat is a *toy* and has not gone through an independent security audit. You should not send sensitive information through nullchat, and the creators of nullchat hold no liability for any damages. 
 
 ```
 Copyright 2017 Chaoyi Zha
